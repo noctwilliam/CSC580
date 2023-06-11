@@ -1,14 +1,14 @@
 import java.util.Scanner;
 
 public class ParallelSearchTh extends Thread {
-    private int[] data;
+    private long [] data;
     private int target;
     private int startIndex;
     private int endIndex;
     private boolean found = false;
     private int index = -1;
     
-    public ParallelSearchTh(int[] data, int target, int startIndex, int endIndex) {
+    public ParallelSearchTh(long [] data, int target, int startIndex, int endIndex) {
         this.data = data;
         this.target = target;
         this.startIndex = startIndex;
@@ -16,6 +16,7 @@ public class ParallelSearchTh extends Thread {
     }
     
     public void run() {
+        // linear search implementation
         for (int i = startIndex; i < endIndex; i++) {
             if (data[i] == target) {
                 found = true;
@@ -25,11 +26,33 @@ public class ParallelSearchTh extends Thread {
         }
     }
     
+    /**
+     * Calculate and display the time taken to execute the program
+     * @param startTime
+     * @param endTime
+     */
     public static void calculateTime (long startTime, long endTime){
         System.out.println("Time taken: " + (endTime - startTime) + " ns\nTime taken: " + (endTime - startTime) / 1000000 + " ms");
     }
+
+    public static void serialOperations(long [] data, int target){
+        System.out.println("SERIAL OPERATION\n------------------------");
+        long startTime = System.nanoTime();
+        // linear search implementation
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] == target) {
+                System.out.println("Found at index: " + i);
+                break;
+            }
+        }
+        long endTime = System.nanoTime();
+        calculateTime(startTime, endTime);
+    }
     
-    public static void parallelOperation(int[] data, int target, int threadNum){
+    public static void parallelOperation(long [] data, int target, int threadNum){
+        System.out.println("PARALLEL OPERATION\n------------------------\nThread amount: " + threadNum);
+
+        long start_time = System.nanoTime();
         ParallelSearchTh[] threads = new ParallelSearchTh[threadNum];
         
         for (int i = 0; i < threadNum; i++) {
@@ -37,9 +60,7 @@ public class ParallelSearchTh extends Thread {
             int endIndex = (i + 1) * data.length / threadNum;
             threads[i] = new ParallelSearchTh(data, target, startIndex, endIndex);
             threads[i].start();
-            System.out.println(threads[i] + " started...");
-            
-            
+            // System.out.println(threads[i] + " started...");
         }
         
         // Wait for all threads to finish
@@ -66,12 +87,12 @@ public class ParallelSearchTh extends Thread {
             System.out.println("Not found");
         }
         
-        // Find the first occurrence of the target
-        
+        long end_time = System.nanoTime();
+        calculateTime(start_time, end_time);
     }
     
     public static void main(String[] args) {
-        int[] data = new int[10000];
+        long [] data = new long [100000000]; //100M
         Scanner in = new Scanner(System.in);
         
         // Initialize the data array
@@ -80,19 +101,14 @@ public class ParallelSearchTh extends Thread {
         }
         
         // Initialize the target
-        // System.out.print("Enter the target (0-9999): ");
-        int target = 9876;
+        int target = 98760000;        
         
-        
-        // Create and start multiple threads for parallel search
-        int threadNum = 4; //Runtime.getRuntime().availableProcessors(); // Use available processors as thread count
-        // call the parallelOperation function and measure the time execution
-        long startTime = System.nanoTime();
+        // Initialize and start multiple threads for parallel search
+        System.out.print("Enter thread amount: ");
+        int threadNum = in.nextInt(); //Runtime.getRuntime().availableProcessors(); -> Use available processors as thread count
         parallelOperation(data, target, threadNum);
-        long endTime = System.nanoTime();
-        calculateTime(startTime, endTime);
-        System.out.println(threadNum);
-        
+        System.out.println();
+        serialOperations(data, target);
         
         in.close();
     }

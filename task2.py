@@ -25,11 +25,11 @@ def parallelSearch(data, target, threadNum):
 def main():
 	data = list(range(100000000)) #100M
 	# print(data)
-	target = 50000000
+	target = 98760000
 
 	# Create a thread pool with user input as threads
 	# threadNum = int(input("Enter the number of threads: "))
-	for threadAmt in range (1,17):
+	for threadAmt in range (1,5):
 		# Perform the parallel search
 		print(f"Thread: {threadAmt}")
 		start_time = time.time()
