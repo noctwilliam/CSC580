@@ -79,6 +79,11 @@ public class Task1 {
 
 		// return (int) (f.tf + s.ts + t.tt);
 	}
+
+	public static void calculateTime (long startTime, long endTime){
+        System.out.println("Time taken: " + (endTime - startTime) + " ns\nTime taken: " + (endTime - startTime) / 1000000 + " ms");
+    }
+
 	public static void main (String [] args){
 		//A * B + C * (D / E ^ 2) + Y % Z
 		Scanner scan = new Scanner (System.in);
@@ -98,21 +103,17 @@ public class Task1 {
 		int Z = scan.nextInt();
 
 		// add a timer to measure time performance  
-		long serialStartTime = System.nanoTime();
-		int resultSerial = serialCompute(A, B, C, D, E, Y, Z);
-		long serialEndTime = System.nanoTime();
-		long serialMsTime = (long) ((serialEndTime - serialStartTime) / 1000000);
-
+		System.out.println("PARALLEL OPERATION\n--------------------------");
 		long parallelStartTime = System.nanoTime();
 		int resultParallel = parallelCompute(A, B, C, D, E, Y, Z);
 		long parallelEndTime = System.nanoTime();
-		long parallelMsTime = (long) ((parallelEndTime - parallelStartTime / 1000000));
+		calculateTime(parallelStartTime, parallelEndTime);
 
-		System.out.println("Serial result: " + resultSerial);
-		System.out.println("Serial time: " + (serialEndTime - serialStartTime) + " ns\t\t" + serialMsTime + " ms");
-		// convert to ms
-		System.out.println("Parallel result: " + resultParallel);
-		System.out.println("Parallel time: " + (parallelEndTime - parallelStartTime) + " ns\t\t" + parallelMsTime + " ms");
+		System.out.println("\nSERIAL OPERATION\n--------------------------");
+		long serialStartTime = System.nanoTime();
+		int resultSerial = serialCompute(A, B, C, D, E, Y, Z);
+		long serialEndTime = System.nanoTime();
+		calculateTime(serialStartTime, serialEndTime);
 
 		scan.close();
 	}

@@ -101,15 +101,18 @@ public class ParallelSearchTh extends Thread {
         }
         
         // Initialize the target
-        int target = 98760000;        
+        int target = 99760000;        
         
         // Initialize and start multiple threads for parallel search
-        System.out.print("Enter thread amount: ");
+        System.out.print("Enter thread amount (<=16): ");
         int threadNum = in.nextInt(); //Runtime.getRuntime().availableProcessors(); -> Use available processors as thread count
-        parallelOperation(data, target, threadNum);
-        System.out.println();
-        serialOperations(data, target);
-        
+        for (int i = 1; i <= threadNum; i++) {
+            System.out.println("EXECUTION " + i + "\n========================");
+            parallelOperation(data, target, i);
+            System.out.println(); //to add space
+            serialOperations(data, target);
+            System.out.println();
+        }
         in.close();
     }
 }
