@@ -84,8 +84,12 @@ public class ParallelSearchTh extends Thread {
 			// Initialize the value of the objects inside the array by calling the normal constructor
 			threads[i] = new ParallelSearchTh(data, target, startIndex, endIndex);
 			// Start the thread
-			threads[i].start();
+			// threads[i].start();
 			// System.out.println(threads[i] + " started...");
+		}
+		// Start all threads after their initialization
+		for (int i = 0; i < threadNum; i++) {
+			threads[i].start();
 		}
 		
 		// Wait for all threads to finish
