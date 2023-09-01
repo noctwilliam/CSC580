@@ -1,7 +1,7 @@
 import java.util.Scanner;
 /**
- * @author harith
- */
+* @author harith
+*/
 
 public class ParallelSearchTh extends Thread {
 	private long [] data;
@@ -30,20 +30,20 @@ public class ParallelSearchTh extends Thread {
 	}
 	
 	/**
-	 * Calculate and display the time taken to execute the program
-	 * @param startTime
-	 * @param endTime
-	 */
+	* Calculate and display the time taken to execute the program
+	* @param startTime
+	* @param endTime
+	*/
 	public static void calculateTime (long startTime, long endTime){
 		System.out.println("Time taken: " + (endTime - startTime) + " ns\nTime taken: " + (endTime - startTime) / 1000000 + " ms");
 	}
-
+	
 	/**
-	 * Serial search implementation
-	 * @param data
-	 * @param target
-	 * @return Display the time taken and whether the target is found or not
-	 */
+	* Serial search implementation
+	* @param data
+	* @param target
+	* @return Display the time taken and whether the target is found or not
+	*/
 	public static void serialOperations(long [] data, int target){
 		System.out.println("SERIAL OPERATION\n------------------------");
 		long startTime = System.nanoTime();
@@ -63,24 +63,28 @@ public class ParallelSearchTh extends Thread {
 	}
 	
 	/**
-	 * Parallel search implementation
-	 * @param data - the array to be searched
-	 * @param target - the target to be searched for
-	 * @param threadNum - the number of threads to be used
-	 * 
-	 * @return Display results of the search and the time taken
-	 */
+	* Parallel search implementation
+	* @param data - the array to be searched
+	* @param target - the target to be searched for
+	* @param threadNum - the number of threads to be used
+	* 
+	* @return Display results of the search and the time taken
+	*/
 	public static void parallelOperation(long [] data, int target, int threadNum){
 		System.out.println("PARALLEL OPERATION\n------------------------\nThread amount: " + threadNum);
-
+		
 		long start_time = System.nanoTime();
 		// Create multiple threads according to threadNum
 		ParallelSearchTh[] threads = new ParallelSearchTh[threadNum];
 		
 		for (int i = 0; i < threadNum; i++) {
 			// Create a thread for each section of the array
-			int startIndex = i * data.length / threadNum;
-			int endIndex = (i + 1) * data.length / threadNum;
+			int chunkSize = data.length / threadNum;
+			// start is equal to i * chunkSize
+			int startIndex = i * chunkSize;
+			// If i = thread, return end array.length, else i * chunkSize
+			int endIndex = (i == threadNum - 1) ? data.length : (i + 1) * chunkSize;
+			// System.out.println("Start: " + startIndex + "\nEnd: " + endIndex);
 			// Initialize the value of the objects inside the array by calling the normal constructor
 			threads[i] = new ParallelSearchTh(data, target, startIndex, endIndex);
 			// Start the thread
@@ -88,8 +92,12 @@ public class ParallelSearchTh extends Thread {
 			// System.out.println(threads[i] + " started...");
 		}
 		// Start all threads after their initialization
-		for (int i = 0; i < threadNum; i++) {
-			threads[i].start();
+		try {
+			for (int i = 0; i < threadNum; i++) {
+				threads[i].start();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		// Wait for all threads to finish
@@ -97,7 +105,7 @@ public class ParallelSearchTh extends Thread {
 			try {
 				// joining the thread
 				threads[i].join();
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

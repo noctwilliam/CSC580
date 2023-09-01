@@ -22,7 +22,8 @@ public class ParallelSearch {
 				int startIndex = i * chunkSize;
 				int endIndex = (i == threadNum - 1) ? data.length : (i + 1) * chunkSize;
 				// System.out.println("Start: " + startIndex + "\nEnd: " + endIndex);
-				executor.execute(new LinearSearch(data, startIndex, endIndex, target));
+				LinearSearch obj = new LinearSearch(data, startIndex, endIndex, target);
+				executor.execute(obj);
 			}
 			executor.shutdown();
 		} catch (Exception e){
@@ -49,13 +50,13 @@ public class ParallelSearch {
 				// Append the data to the file
 				try (FileWriter writer = new FileWriter(file, true)) {
 					long mili = (nano_end_time - nano_start_time) / 1000000;
-					writer.write(mili + "\n");
+					writer.write(mili + ",");
 				}
 			} else {
 				// Create a new file and write the data to it
 				try (FileWriter writer = new FileWriter(file)) {
 					long mili = (nano_end_time - nano_start_time) / 1000000;
-					writer.write(mili + "\n");
+					writer.write(mili + ",");
 				}
 			}
 		} catch (IOException e) {
@@ -74,14 +75,14 @@ public class ParallelSearch {
 				// Append the data to the file
 				try (FileWriter writer = new FileWriter(file, true)) {
 					long mili = (nano_end_time - nano_start_time) / 1000000;
-					writer.write(mili + "\n");
-
+					writer.write(mili + ",");
+					
 				}
 			} else {
 				// Create a new file and write the data to it
 				try (FileWriter writer = new FileWriter(file)) {
 					long mili = (nano_end_time - nano_start_time) / 1000000;
-					writer.write(mili + "\n");
+					writer.write(mili + ",");
 				}
 			}
 		} catch (IOException e) {
@@ -102,8 +103,8 @@ public class ParallelSearch {
 		}
 		
 		// initialize the target
-		target = 98760000; // 98.76M
-		int limit = 10000;
+		target = 99880000; // 98.76M
+		int limit = 50;
 		
 		for (int threadNum = 1; threadNum <= limit; threadNum++){
 			
@@ -111,10 +112,12 @@ public class ParallelSearch {
 			System.out.println("\nThread: " + threadNum);
 			
 			nano_start_time = System.nanoTime();
+			mula = System.nanoTime();
+			
 			parallelSearch(data, target, threadNum);
 			nano_end_time = System.nanoTime();
-			parallelTimeStore(nano_start_time, nano_end_time);
-			calculateTime(nano_start_time, nano_end_time);
+			parallelTimeStore(mula,habeh);
+			calculateTime(mula, habeh);
 			
 			// Perform the serial search
 			nano_start_time = System.nanoTime();
@@ -147,6 +150,7 @@ public class ParallelSearch {
 					index = i;
 					if (found){
 						System.out.println("Found at index: " + index);
+						habeh = System.nanoTime();
 						break;
 					} else{
 						System.out.println("Not found");
